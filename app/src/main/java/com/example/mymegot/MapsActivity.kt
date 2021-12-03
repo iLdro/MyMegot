@@ -5,11 +5,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -34,16 +36,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-    private fun getLocationAccess() {
+
+
+
+    private fun getLocationAccess(): Location? {
+        val lm = getSystemService(LOCATION_SERVICE) as LocationManager
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.isMyLocationEnabled = true
         }
         else
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST)
+        return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
     }
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        val lm = getSystemService(LOCATION_SERVICE) as LocationManager
         if (requestCode == LOCATION_PERMISSION_REQUEST) {
             if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
                 if (ActivityCompat.checkSelfPermission(
@@ -54,14 +62,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return
+
                 }
                 mMap.isMyLocationEnabled = true
             }
@@ -74,6 +75,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -81,7 +83,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.location_map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+
     }
+
 
     /**
      * Manipulates the map once available.
@@ -99,6 +104,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         getLocationAccess()
         // Add a marker in Sydney and move the camera
+        val btn_click_me = findViewById(R.id.button1) as Button
+        // set on-click listener
+        btn_click_me.setOnClickListener {
+            // your code to perform when the user clicks on the button
+            val loc =getLocationAccess()
+
+            if (loc != null) {
+                mMap.addMarker(MarkerOptions().position(LatLng(loc.latitude,loc.longitude)).title("Marker in Sydney"))
+            }
+
+
+        }
 
     }
+
 }
+

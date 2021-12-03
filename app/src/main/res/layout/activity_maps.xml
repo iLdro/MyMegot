@@ -14,16 +14,18 @@
 
     <Button
         android:id="@+id/button1"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="596dp"
-        android:layout_marginEnd="150dp"
+        android:layout_marginTop="329dp"
+        android:layout_marginEnd="161dp"
         android:layout_marginBottom="5dp"
         android:background="#359c5e"
         android:padding="8dp"
+
         android:text="@string/add_one"
         android:textColor="#ffffff" />
 
